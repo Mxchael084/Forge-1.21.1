@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -53,21 +52,24 @@ public class RuptureReborn {
     }
 
     @SubscribeEvent
-    public static void onHud(RenderGuiEvent.Post event) {
+    public static void onRender(TickEvent.RenderTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
         Minecraft mc = Minecraft.getInstance();
-        if (mc.options.hideGui || mc.getDebugOverlay().showDebugScreen()) return;
-        GuiGraphics g = event.getGuiGraphics();
+        if (mc.level == null || mc.player == null || mc.screen != null || mc.options.hideGui) return;
+
+        GuiGraphics g = new GuiGraphics(mc, mc.renderBuffers().bufferSource());
         g.drawString(mc.font, NAME, 4, 4, 0xFF55FFFF, true);
 
         List<Module> active = MODULES.all().stream()
                 .filter(Module::isEnabled)
                 .sorted(Comparator.comparingInt((Module m) -> mc.font.width(m.getName())).reversed())
                 .toList();
-        int w = event.getWindow().getGuiScaledWidth();
+        int w = mc.getWindow().getGuiScaledWidth();
         int y = 4;
         for (Module m : active) {
             g.drawString(mc.font, m.getName(), w - mc.font.width(m.getName()) - 4, y, 0xFFFFFFFF, true);
             y += 10;
         }
+        g.flush();
     }
 }
