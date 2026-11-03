@@ -1,0 +1,23 @@
+modLoader="javafml"
+loaderVersion="[52,)"
+license="MIT"
+
+[[mods]]
+modId="rupturereborn"
+version="1.0.0"
+displayName="Rupture Reborn"
+description='''Client-seitiges Utility-Mod: Modulsystem, HUD und ClickGUI.'''
+
+[[dependencies.rupturereborn]]
+modId="forge"
+mandatory=true
+versionRange="[52,)"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.rupturereborn]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.21.1,1.22)"
+ordering="NONE"
+side="CLIENT"
